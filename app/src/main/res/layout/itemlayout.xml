@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="30px">
+
+    <ImageView
+        android:id="@+id/postProfile"
+        android:layout_width="23dp"
+        android:layout_height="21dp"
+        android:src="@drawable/profile"
+        android:layout_marginLeft="10dp"/>
+    <TextView
+        android:id="@+id/postText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="안녕하세요 \n 같이 운동할 사람 구해요"
+        android:layout_margin="20px"
+        android:textSize="15dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right">
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/heart"
+            android:background="@color/white"
+            android:layout_marginRight="10px"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/comment"
+            android:background="@color/white"
+            android:layout_marginRight="10px"/>
+
+    </LinearLayout>
+</LinearLayout>

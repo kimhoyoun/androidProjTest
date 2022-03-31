@@ -17,15 +17,23 @@ import org.w3c.dom.Text;
 public class CommunityItemLayout extends LinearLayout{
     ImageView profile;
     TextView title;
+    LinearLayout profileLayout;
     LinearLayout innerLayout;
     ImageButton heart;
     ImageButton comment;
     CommunityItemDTO dto;
+    TextView userid;
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+    LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+
 
     public CommunityItemLayout(Context context, CommunityItemDTO dto) {
         super(context);
 
         profile = new ImageView(context);
+        userid = new TextView(context);
+        profileLayout = new LinearLayout(context);
+
         title = new TextView(context);
         innerLayout = new LinearLayout(context);
         heart = new ImageButton(context);
@@ -37,6 +45,9 @@ public class CommunityItemLayout extends LinearLayout{
 
     public void setLayout(){
         profile.setImageResource(R.drawable.profile);
+        userid.setText(dto.getUserID());
+
+        params.setMargins(20,10,0,10);
 
         title.setText(dto.getTitle());
         title.setTextSize(15);
@@ -47,9 +58,13 @@ public class CommunityItemLayout extends LinearLayout{
         comment.setBackgroundColor(Color.WHITE);
         innerLayout.setGravity(Gravity.RIGHT);
         this.setOrientation(LinearLayout.VERTICAL);
-        this.addView(profile, new LinearLayout.LayoutParams(
+        profileLayout.addView(profile, new LinearLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
         );
+        profileLayout.addView(userid, params);
+
+        this.addView(profileLayout, new LinearLayout.LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
         this.addView(title, new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));

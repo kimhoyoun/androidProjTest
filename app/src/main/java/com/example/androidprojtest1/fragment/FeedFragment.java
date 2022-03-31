@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.example.androidprojtest1.CommunityActivity;
+import com.example.androidprojtest1.MyDatabaseHelper;
 import com.example.androidprojtest1.R;
 import com.example.androidprojtest1.model.CommunityItemDTO;
 import com.example.androidprojtest1.model.CommunityItemLayout;
@@ -23,24 +24,29 @@ import java.util.ArrayList;
 public class FeedFragment extends Fragment {
     Context context;
 
-    SQLiteDatabase database;
     LinearLayout scrollViewInLayout;
     ArrayList<CommunityItemLayout> itemList = new ArrayList<>();
     LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
+
+    MyDatabaseHelper myHelper;
+    SQLiteDatabase sqlDB;
+
+
     public FeedFragment(){
 
     }
 
-    public FeedFragment(SQLiteDatabase database, Context context){
-        this.database = database;
+    public FeedFragment(Context context){
         this.context = context;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        myHelper = new MyDatabaseHelper(context);
 
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
 
@@ -56,13 +62,14 @@ public class FeedFragment extends Fragment {
     public void scrollViewInit(){
         CommunityItemDTO dto;
 
+        sqlDB = myHelper.getReadableDatabase();
+
+
         itemParams.setMargins(30,30,30,30);
         try{
-            if(database != null){
-                Cursor cursor = database.rawQuery("select * from communityItem",null);
-
+            if(sqlDB != null){
+                 Cursor cursor = sqlDB.rawQuery("select * from communityItem",null);
                 int count = cursor.getCount();
-                android.util.Log.i("결과 수","레코드 수 : "+count);
 
                 for(int i =0; i<count; i++){
                     cursor.moveToNext();

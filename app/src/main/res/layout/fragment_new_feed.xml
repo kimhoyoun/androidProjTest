@@ -39,7 +39,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:hint="본문을 입력해주세요."/>
+            android:hint="본문을 입력해주세요."
+            android:text="지역 항목 추가(지역으로 검색)\n
+가게에 대한 위치 정보(있으면 좋음)링크"          />
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

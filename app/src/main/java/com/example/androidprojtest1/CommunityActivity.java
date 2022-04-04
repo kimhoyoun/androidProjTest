@@ -63,11 +63,6 @@ public class CommunityActivity extends AppCompatActivity{
                     selected = fragment1;
                 }else if(position == 2){
 
-                        fragment2 = new NewFeedFragment(CommunityActivity.this);
-
-                    selected = fragment2;
-                }else if(position == 3){
-
                         fragment3 = new MyPageFragment();
 
                     selected = fragment3;

@@ -57,6 +57,8 @@ public class CommunityItemLayout extends LinearLayout{
         comment.setImageResource(R.drawable.comment);
         comment.setBackgroundColor(Color.WHITE);
         innerLayout.setGravity(Gravity.RIGHT);
+
+
         this.setOrientation(LinearLayout.VERTICAL);
         profileLayout.addView(profile, new LinearLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)

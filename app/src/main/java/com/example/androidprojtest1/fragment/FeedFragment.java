@@ -10,7 +10,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.androidprojtest1.CommunityActivity;
 import com.example.androidprojtest1.MyDatabaseHelper;
 import com.example.androidprojtest1.R;
 import com.example.androidprojtest1.model.CommentDTO;
@@ -31,8 +29,8 @@ import com.example.androidprojtest1.model.CommentItemLayout;
 import com.example.androidprojtest1.model.CommunityItemDTO;
 import com.example.androidprojtest1.model.CommunityItemLayout;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class FeedFragment extends Fragment {
     Context context;
@@ -132,7 +130,6 @@ public class FeedFragment extends Fragment {
             final int index;
             index = i;
 
-
             itemList.get(i).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -141,14 +138,13 @@ public class FeedFragment extends Fragment {
 
                     TextView title = (TextView) detailView.findViewById(R.id.detalTitle);
                     TextView mainText = (TextView) detailView.findViewById(R.id.detailMainText);
+                    TextView dateText = (TextView) detailView.findViewById(R.id.detailDateText);
 
                     title.setText(itemList.get(index).getDto().getTitle());
                     mainText.setText(itemList.get(index).getDto().getMainText());
-
+                    dateText.setText(itemList.get(index).getDto().getDate().substring(0,10));
 
                     setComment(index);
-
-
 
                     feedFrame.setVisibility(View.INVISIBLE);
 
@@ -271,10 +267,12 @@ public class FeedFragment extends Fragment {
         sqlDB = myHelper.getReadableDatabase();
 
 
-        itemParams.setMargins(30,30,30,30);
+        itemParams.setMargins(10,10,10,10);
         try{
             if(sqlDB != null){
-                 Cursor cursor = sqlDB.rawQuery("select * from communityItem",null);
+
+                String query = getString(R.string.selectAllQuery);
+                Cursor cursor = sqlDB.rawQuery(query,null);
                 int count = cursor.getCount();
 
                 for(int i =0; i<count; i++){

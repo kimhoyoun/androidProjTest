@@ -72,6 +72,9 @@ public class CommentItemLayout extends LinearLayout {
         android.util.Log.i("결과", "feed_user : "+ dto.getComment_user());
         android.util.Log.i("결과", "userID : "+cdto.getUserID());
 
+
+        // 로그인한 userid와 댓글을 작성한 userID가 일치하면 수정&삭제 버튼 보이기
+        // cdto.getUserID -> 로그인 userID로 수정 예정
        if(dto.getComment_user().equals(cdto.getUserID())){
            btnCommentUpdate.setText("수정");
            btnCommentDelete.setText("삭제");

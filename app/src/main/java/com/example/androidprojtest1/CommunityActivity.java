@@ -36,7 +36,7 @@ public class CommunityActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.community);
-        getSupportActionBar().hide();
+
 
         fragment0 = new FeedFragment(CommunityActivity.this);
 

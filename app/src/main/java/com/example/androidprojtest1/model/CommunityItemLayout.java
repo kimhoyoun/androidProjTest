@@ -117,7 +117,7 @@ public class CommunityItemLayout extends LinearLayout{
             long diffSec = (mNow - format.getTime()) / 1000; //초 차이
             long diffMin = (mNow - format.getTime()) / 60000; //분 차이
             long diffHor = (mNow - format.getTime()) / 3600000; //시 차이
-            long diffDays = diffSec / (24 * 60 * 60);
+            long diffDays = (mNow / (24 * 60 * 60)/1000) - (format.getTime()/(24*60*60)/1000);
 
             if(diffDays != 0){
                 result = diffDays+"일 전";

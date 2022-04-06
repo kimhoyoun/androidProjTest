@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // 타이틀바 숨기기
-        getSupportActionBar().hide();
+
         Button btnEdit = (Button) findViewById(R.id.btnEdit);
         Button btnExercise = (Button) findViewById(R.id.btnExercise);
         Button btnFood = (Button) findViewById(R.id.btnFood);

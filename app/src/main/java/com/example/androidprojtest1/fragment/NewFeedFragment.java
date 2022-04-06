@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,16 +29,8 @@ import java.util.ArrayList;
 public class NewFeedFragment extends Fragment {
 
     Context context;
-    EditText newTitle;
-    EditText newMainText;
-    ImageButton btnImgAdd;
-    Button btnNewFeedInsert;
-    Button btnNewFeedCancel;
 
-    MyDatabaseHelper myHelper;
-    SQLiteDatabase sqlDB;
-
-    CommunityActivity comAc;
+    Button btnsample;
     public NewFeedFragment(){
 
     }
@@ -49,34 +42,23 @@ public class NewFeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        myHelper = new MyDatabaseHelper(context);
-
-        View view = inflater.inflate(R.layout.fragment_new_feed, container, false);
-        newTitle = (EditText) view.findViewById(R.id.newTitle);
-        newMainText = (EditText) view.findViewById(R.id.newMainText);
-        btnImgAdd = (ImageButton) view.findViewById(R.id.btnImgAdd);
-        btnNewFeedInsert = (Button) view.findViewById(R.id.btnNewFeedInsert);
-        btnNewFeedCancel = (Button) view.findViewById(R.id.btnNewFeedCancel);
 
 
-        comAc = (CommunityActivity) getActivity();
 
-        btnNewFeedInsert.setOnClickListener(new View.OnClickListener() {
+        View view = inflater.inflate(R.layout.fragment_new_feed2, container, false);
+
+        btnsample = (Button)view.findViewById(R.id.btnsample);
+
+        btnsample.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String query = "insert into communityItem (user_id, title, main_text) values('user6','"+newTitle.getText().toString()
-                        +"','"+newMainText.getText().toString()+"')";
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                FeedFragment fragment1 = new FeedFragment(context);
 
-                sqlDB = myHelper.getWritableDatabase();
-                sqlDB.execSQL(query);
-                sqlDB.close();
-                Toast.makeText(context, "입력됨",Toast.LENGTH_SHORT).show();
-
-                comAc.feedgo();
+                transaction.replace(R.id.frame,fragment1);
+                transaction.commit();
             }
-
-
         });
 
         return view;

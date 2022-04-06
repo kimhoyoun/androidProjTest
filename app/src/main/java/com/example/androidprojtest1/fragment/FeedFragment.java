@@ -7,10 +7,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -19,8 +25,10 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.androidprojtest1.MyDatabaseHelper;
 import com.example.androidprojtest1.R;
@@ -56,12 +64,16 @@ public class FeedFragment extends Fragment {
     InputMethodManager imm;
 
     // detail page view
+
+    LinearLayout detailMyLayout;
     Button btndetailPrev;
     Button btnNewComment;
     Button btnCommentImg;
     EditText newCommnetText;
     LinearLayout commentLayout;
-
+    Button btnFeedUpdate;
+    Button btnFeedDelete;
+    Button btndetailMenu;
 
     // newFeedView
     View newFeedView;
@@ -93,6 +105,7 @@ public class FeedFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
 
+
         scrollViewInLayout = (LinearLayout) view.findViewById(R.id.scrollViewInLayout);
 //        ImageButton btnNewFeed = (ImageButton) view.findViewById(R.id.btnNewFeed);
         feedLayout = (LinearLayout)view.findViewById(R.id.feedLayout);
@@ -109,13 +122,17 @@ public class FeedFragment extends Fragment {
         // detailView init
         detailView = getMyLayout(inflater, container);
 
+        btnFeedUpdate = (Button) detailView.findViewById(R.id.btnFeedUpdate);
+        btnFeedDelete = (Button) detailView.findViewById(R.id.btnFeedDelete);
+        detailMyLayout = (LinearLayout) detailView.findViewById(R.id.detailMyLayout);
         btndetailPrev = (Button) detailView.findViewById(R.id.btndetailPrev);
         btnNewComment = (Button) detailView.findViewById(R.id.btnNewComment);
         btnCommentImg = (Button) detailView.findViewById(R.id.btnCommentImg);
         newCommnetText = (EditText) detailView.findViewById(R.id.newCommnetText);
-
         commentLayout = (LinearLayout) detailView.findViewById(R.id.commentLayout);
+        btndetailMenu = (Button) detailView.findViewById(R.id.btndetailMenu);
 
+        registerForContextMenu(btndetailMenu);
 
         // newFeed init
         newFeedView = inflater.inflate(R.layout.fragment_new_feed, container, false);
@@ -140,9 +157,19 @@ public class FeedFragment extends Fragment {
                     TextView mainText = (TextView) detailView.findViewById(R.id.detailMainText);
                     TextView dateText = (TextView) detailView.findViewById(R.id.detailDateText);
 
+
+
+
                     title.setText(itemList.get(index).getDto().getTitle());
                     mainText.setText(itemList.get(index).getDto().getMainText());
                     dateText.setText(itemList.get(index).getDto().getDate().substring(0,10));
+
+                    if(itemList.get(index).getDto().getUserID().equals("user1")){
+                        detailMyLayout.setVisibility(View.VISIBLE);
+                    }else{
+                        detailMyLayout.setVisibility(View.INVISIBLE);
+                    }
+
 
                     setComment(index);
 
@@ -164,6 +191,10 @@ public class FeedFragment extends Fragment {
             });
 
 
+
+
+
+
             btnNewComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -181,22 +212,35 @@ public class FeedFragment extends Fragment {
                 }
             });
 
+//            btnNewFeed.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//
+//                    btnPrev = (Button) newFeedView.findViewById(R.id.btnNewFeedCancel);
+//
+//                    feedFrame.setVisibility(View.INVISIBLE);
+//
+//                    detailFrame.removeAllViews();
+//                    detailFrame.addView(newFeedView);
+//                    detailFrame.setVisibility(view.VISIBLE);
+//
+//                }
+//            });
+
+            // 새 프래그먼트로 이동
             btnNewFeed.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-
-                    btnPrev = (Button) newFeedView.findViewById(R.id.btnNewFeedCancel);
-
-                    feedFrame.setVisibility(View.INVISIBLE);
-
-                    detailFrame.removeAllViews();
-                    detailFrame.addView(newFeedView);
-                    detailFrame.setVisibility(view.VISIBLE);
-
+                    Bundle bundle = new Bundle(); // 무언가를 담을 준비를 할 수 있는 꾸러미
+                    bundle.putString("fromFrag1","프래그먼트1 data");
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    NewFeedFragment fragment2 = new NewFeedFragment(context);
+                    fragment2.setArguments(bundle);
+                    transaction.replace(R.id.frame,fragment2);
+                    transaction.commit(); // 저장
                 }
             });
-
 
             btnNewFeedCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -261,6 +305,8 @@ public class FeedFragment extends Fragment {
         return view;
     }
 
+
+
     public void scrollViewInit(){
         CommunityItemDTO dto;
 
@@ -300,6 +346,24 @@ public class FeedFragment extends Fragment {
         }
     }
 
+
+//    @Override
+//    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//    }
+//
+//    @Override
+//    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+//        super.onCreateContextMenu(menu, v, menuInfo);
+//
+//        MenuInflater menuInflater = getActivity().getMenuInflater();
+//
+//        if (v == btndetailMenu){
+//            menu.setHeaderTitle("detail menu");
+//
+//            menuInflater.inflate(R.menu.feedmenu, menu);
+//        }
+//    }
 
     public void fragmentRefresh(){
         FragmentTransaction ft = getFragmentManager().beginTransaction();

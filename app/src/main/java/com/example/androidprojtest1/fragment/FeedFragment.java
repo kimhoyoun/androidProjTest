@@ -3,20 +3,15 @@ package com.example.androidprojtest1.fragment;
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -25,11 +20,11 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
+import com.example.androidprojtest1.CommunityActivity;
+import com.example.androidprojtest1.DetailActivity;
+import com.example.androidprojtest1.InsertActivity;
 import com.example.androidprojtest1.MyDatabaseHelper;
 import com.example.androidprojtest1.R;
 import com.example.androidprojtest1.model.CommentDTO;
@@ -38,7 +33,6 @@ import com.example.androidprojtest1.model.CommunityItemDTO;
 import com.example.androidprojtest1.model.CommunityItemLayout;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class FeedFragment extends Fragment {
     Context context;
@@ -63,17 +57,6 @@ public class FeedFragment extends Fragment {
 
     InputMethodManager imm;
 
-    // detail page view
-
-    LinearLayout detailMyLayout;
-    Button btndetailPrev;
-    Button btnNewComment;
-    Button btnCommentImg;
-    EditText newCommnetText;
-    LinearLayout commentLayout;
-    Button btnFeedUpdate;
-    Button btnFeedDelete;
-    Button btndetailMenu;
 
     // newFeedView
     View newFeedView;
@@ -84,7 +67,6 @@ public class FeedFragment extends Fragment {
     ImageButton btnImgAdd;
 
 
-    ArrayList<LinearLayout> commentList;
 
     int feedNo = -1;
 
@@ -120,19 +102,19 @@ public class FeedFragment extends Fragment {
 
 
         // detailView init
-        detailView = getMyLayout(inflater, container);
-
-        btnFeedUpdate = (Button) detailView.findViewById(R.id.btnFeedUpdate);
-        btnFeedDelete = (Button) detailView.findViewById(R.id.btnFeedDelete);
-        detailMyLayout = (LinearLayout) detailView.findViewById(R.id.detailMyLayout);
-        btndetailPrev = (Button) detailView.findViewById(R.id.btndetailPrev);
-        btnNewComment = (Button) detailView.findViewById(R.id.btnNewComment);
-        btnCommentImg = (Button) detailView.findViewById(R.id.btnCommentImg);
-        newCommnetText = (EditText) detailView.findViewById(R.id.newCommnetText);
-        commentLayout = (LinearLayout) detailView.findViewById(R.id.commentLayout);
-        btndetailMenu = (Button) detailView.findViewById(R.id.btndetailMenu);
-
-        registerForContextMenu(btndetailMenu);
+//        detailView = getMyLayout(inflater, container);
+//
+//        btnFeedUpdate = (Button) detailView.findViewById(R.id.btnFeedUpdate);
+//        btnFeedDelete = (Button) detailView.findViewById(R.id.btnFeedDelete);
+//        detailMyLayout = (LinearLayout) detailView.findViewById(R.id.detailMyLayout);
+//
+//        btnNewComment = (Button) detailView.findViewById(R.id.btnNewComment);
+//        btnCommentImg = (Button) detailView.findViewById(R.id.btnCommentImg);
+//        newCommnetText = (EditText) detailView.findViewById(R.id.newCommnetText);
+//        commentLayout = (LinearLayout) detailView.findViewById(R.id.commentLayout);
+//
+//
+//        registerForContextMenu(btndetailMenu);
 
         // newFeed init
         newFeedView = inflater.inflate(R.layout.fragment_new_feed, container, false);
@@ -151,102 +133,18 @@ public class FeedFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    feedNo = index;
-
-                    TextView title = (TextView) detailView.findViewById(R.id.detalTitle);
-                    TextView mainText = (TextView) detailView.findViewById(R.id.detailMainText);
-                    TextView dateText = (TextView) detailView.findViewById(R.id.detailDateText);
-
-
-
-
-                    title.setText(itemList.get(index).getDto().getTitle());
-                    mainText.setText(itemList.get(index).getDto().getMainText());
-                    dateText.setText(itemList.get(index).getDto().getDate().substring(0,10));
-
-                    if(itemList.get(index).getDto().getUserID().equals("user1")){
-                        detailMyLayout.setVisibility(View.VISIBLE);
-                    }else{
-                        detailMyLayout.setVisibility(View.INVISIBLE);
-                    }
-
-
-                    setComment(index);
-
-                    feedFrame.setVisibility(View.INVISIBLE);
-
-                    detailFrame.removeAllViews();
-
-                    detailFrame.addView(detailView);
-                    detailFrame.setVisibility(View.VISIBLE);
-
-
-
-
-
-
-                }
-
-
-            });
-
-
-
-
-
-
-            btnNewComment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String query = "insert into comment (comment_user, comment_text, feed_user, feed_no) values('user6','"+newCommnetText.getText().toString()
-                            +"','"+itemList.get(feedNo).getDto().getUserID().toString()+"',"+itemList.get(feedNo).getDto().getNo()+")";
-
-                    sqlDB = myHelper.getWritableDatabase();
-                    sqlDB.execSQL(query);
-                    sqlDB.close();
-
-                    imm.hideSoftInputFromWindow(newCommnetText.getWindowToken(), 0);
-                    newCommnetText.setText("");
-                    setComment(feedNo);
-
+                    CommunityActivity act = (CommunityActivity)getActivity();
+                    act.detailPage(itemList.get(index).getDto());
                 }
             });
+        }
 
-//            btnNewFeed.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//
-//                    btnPrev = (Button) newFeedView.findViewById(R.id.btnNewFeedCancel);
-//
-//                    feedFrame.setVisibility(View.INVISIBLE);
-//
-//                    detailFrame.removeAllViews();
-//                    detailFrame.addView(newFeedView);
-//                    detailFrame.setVisibility(view.VISIBLE);
-//
-//                }
-//            });
 
-            // 새 프래그먼트로 이동
             btnNewFeed.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Bundle bundle = new Bundle(); // 무언가를 담을 준비를 할 수 있는 꾸러미
-                    bundle.putString("fromFrag1","프래그먼트1 data");
-                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                    NewFeedFragment fragment2 = new NewFeedFragment(context);
-                    fragment2.setArguments(bundle);
-                    transaction.replace(R.id.frame,fragment2);
-                    transaction.commit(); // 저장
-                }
-            });
-
-            btnNewFeedCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    detailFrame.setVisibility(View.INVISIBLE);
-                    feedFrame.setVisibility(View.VISIBLE);
+                   Intent intent = new Intent(getActivity(), InsertActivity.class);
+                   startActivity(intent);
                 }
             });
 
@@ -269,42 +167,8 @@ public class FeedFragment extends Fragment {
                 }
             });
 
-
-
-
-            btndetailPrev.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    detailFrame.setVisibility(View.INVISIBLE);
-                    feedFrame.setVisibility(View.VISIBLE);
-                }
-            });
-
-
-
-            if (btnPrev != null) {
-                btnPrev.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        detailFrame.setVisibility(View.INVISIBLE);
-                        feedFrame.setVisibility(View.VISIBLE);
-                    }
-                });
-            }
-        }
         return view;
     }
-
-
-
-    public View getMyLayout(LayoutInflater inflater, ViewGroup container){
-        View view;
-
-        view = inflater.inflate(R.layout.detailpage, container, false);
-
-        return view;
-    }
-
 
 
     public void scrollViewInit(){
@@ -375,42 +239,5 @@ public class FeedFragment extends Fragment {
         return itemList;
     }
 
-    public void setComment(int index){
-        CommentDTO dto;
-        commentList = new ArrayList<>();
-        commentLayout.removeAllViews();
-        sqlDB = myHelper.getReadableDatabase();
 
-        try{
-            if(sqlDB != null){
-                Cursor cursor = sqlDB.rawQuery("select * from comment where feed_no = "+itemList.get(index).getDto().getNo(),null);
-                int count = cursor.getCount();
-
-                android.util.Log.i("결과", count+"");
-                for(int i =0; i<count; i++){
-                    cursor.moveToNext();
-                    int no = cursor.getInt(0);
-                    String comment_user = cursor.getString(1);
-                    String comment_text = cursor.getString(2);
-                    String feed_user = cursor.getString(3);
-                    int feed_no = cursor.getInt(4);
-
-//                                String date = cursor.getString(6);
-
-                    dto = new CommentDTO(no, comment_user, comment_text, feed_user, feed_no);
-                    android.util.Log.i("결과", dto.toString());
-                    CommentItemLayout itemLayout = new CommentItemLayout(context,dto, itemList.get(index).getDto());
-
-                    commentList.add(itemLayout);
-                    android.util.Log.i("결과", commentList.size()+"");
-                    commentLayout.addView(itemLayout, itemParams);
-
-                }
-            } else{
-                android.util.Log.i("결과", "실패");
-            }
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-    }
 }

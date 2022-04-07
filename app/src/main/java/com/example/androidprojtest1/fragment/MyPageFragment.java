@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.androidprojtest1.CommunityActivity;
 import com.example.androidprojtest1.MyDatabaseHelper;
 import com.example.androidprojtest1.R;
 import com.example.androidprojtest1.model.CommentDTO;
@@ -72,6 +73,21 @@ public class MyPageFragment extends Fragment {
                 setComment();
             }
         });
+
+        for(int i =0; i<itemList.size(); i++) {
+            final int index;
+            index = i;
+
+            itemList.get(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    CommunityActivity act = (CommunityActivity)getActivity();
+                    act.detailPage(itemList.get(index).getDto());
+                }
+            });
+        }
+
 
         return view;
     }

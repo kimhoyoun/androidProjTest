@@ -1,8 +1,13 @@
 package com.example.androidprojtest1.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.android.material.dialog.InsetDialogOnTouchListener;
 
-public class CommunityItemDTO {
+import java.io.Serializable;
+
+public class CommunityItemDTO implements Serializable {
     private int no;
     private String userID;
     private String title;
@@ -93,4 +98,5 @@ public class CommunityItemDTO {
                 ", date='" + date + '\'' +
                 '}';
     }
+
 }

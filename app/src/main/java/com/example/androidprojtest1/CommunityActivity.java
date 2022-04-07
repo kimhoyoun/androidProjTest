@@ -1,6 +1,7 @@
 package com.example.androidprojtest1;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.example.androidprojtest1.fragment.FeedFragment;
 import com.example.androidprojtest1.fragment.MyPageFragment;
 import com.example.androidprojtest1.fragment.NewFeedFragment;
 import com.example.androidprojtest1.fragment.SearchFragment;
+import com.example.androidprojtest1.model.CommunityItemDTO;
 import com.example.androidprojtest1.model.CommunityItemLayout;
 import com.google.android.material.tabs.TabLayout;
 
@@ -36,7 +38,6 @@ public class CommunityActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.community);
-
 
         fragment0 = new FeedFragment(CommunityActivity.this);
 
@@ -82,27 +83,15 @@ public class CommunityActivity extends AppCompatActivity{
             }
         });
 
-
-
-
-
-
     }
 
-    public void feedgo(){
-        getSupportFragmentManager().beginTransaction().replace(R.id.frame, fragment0).commit();
+    public void detailPage(CommunityItemDTO dto){
+        CommunityItemDTO tempDTO = new CommunityItemDTO(dto.getNo(), dto.getUserID(), dto.getTitle(), dto.getMainText(), dto.getLikeNum(), dto.getcName(), dto.getDate());
 
-    }
+        Intent intent = new Intent(CommunityActivity.this, DetailActivity.class);
+        intent.putExtra("dto",tempDTO);
+        startActivity(intent);
 
-    public SQLiteDatabase getDatabase(){
-        try{
-            SQLiteDatabase database = openOrCreateDatabase("projectDB.db", Context.MODE_PRIVATE,null);
-            return database;
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-
-        return null;
     }
 }
 

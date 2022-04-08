@@ -1,5 +1,6 @@
 package com.example.androidprojtest1;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -75,14 +77,13 @@ public class InsertActivity extends AppCompatActivity {
                 return true;
             case R.id.btnInsertOK:{
                 if(dto != null){
-                    update();
+                    noticeMessage("수정");
+
                 }else{
-                    insert();
+                    noticeMessage("입력");
                 }
             }
-
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -122,4 +123,31 @@ public class InsertActivity extends AppCompatActivity {
         finish();
     }
 
+    public void noticeMessage(String type){
+        AlertDialog.Builder builder = new AlertDialog.Builder(InsertActivity.this);
+        builder.setTitle(type);
+        builder.setMessage(type+"하시겠습니까?");
+        builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+               if(type.equals("수정")){
+                   update();
+               }else if(type.equals("입력")){
+                   insert();
+               }
+
+                Toast.makeText(InsertActivity.this, type+"됨",Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(InsertActivity.this, "취소되었습니다.",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.create().show();
+    }
 }

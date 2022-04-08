@@ -1,5 +1,6 @@
 package com.example.androidprojtest1;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,9 +13,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -51,6 +54,7 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.detailpage);
 
         myHelper = new MyDatabaseHelper(this);
+
         imm = (InputMethodManager) this.getSystemService(INPUT_METHOD_SERVICE);
         Intent intent = getIntent();
         dto = (CommunityItemDTO)intent.getSerializableExtra("dto");
@@ -119,15 +123,34 @@ public class DetailActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.detail_menuDelete:
-                boolean result;
 
-                result = delete(dto);
 
-                if(result){
+                AlertDialog.Builder builder = new AlertDialog.Builder(DetailActivity.this);
+                builder.setTitle("삭제");
+                builder.setMessage("삭제하시겠습니까?");
+                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        boolean result;
+                        result = delete(dto);
+                        Toast.makeText(DetailActivity.this, "삭제됨",Toast.LENGTH_SHORT).show();
 
-                }else{
+                        if(result){
+                            finish();
+                        }else{
 
-                }
+                        }
+
+                    }
+                });
+                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(DetailActivity.this, "취소되었습니다.",Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                builder.create().show();
 
                 return true;
         }
@@ -144,6 +167,14 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public boolean delete(CommunityItemDTO item){
+        int no = item.getNo();
+
+        String query = "delete from communityItem where no = "+no;
+
+        sqlDB = myHelper.getWritableDatabase();
+        sqlDB.execSQL(query);
+        sqlDB.close();
+
 
 
         return true;

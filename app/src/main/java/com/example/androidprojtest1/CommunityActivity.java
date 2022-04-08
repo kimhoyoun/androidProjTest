@@ -28,10 +28,10 @@ public class CommunityActivity extends AppCompatActivity{
     ViewPager viewPage;
     SQLiteDatabase database;
 
-    Fragment fragment0, fragment1, fragment2, fragment3;
+    Fragment fragment0, fragment1, fragment2;
     TabLayout tabs;
 
-
+    Fragment selected;
 
 
     @Override
@@ -40,7 +40,7 @@ public class CommunityActivity extends AppCompatActivity{
         setContentView(R.layout.community);
 
         fragment0 = new FeedFragment(CommunityActivity.this);
-
+        selected = fragment0;
         getSupportFragmentManager().beginTransaction().add(R.id.frame, fragment0).commit();
 
         tabs = (TabLayout) findViewById(R.id.tabs);
@@ -51,7 +51,7 @@ public class CommunityActivity extends AppCompatActivity{
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
 
-                Fragment selected = null;
+
                 if(position == 0){
 
                     fragment0 = new FeedFragment(CommunityActivity.this);
@@ -64,9 +64,9 @@ public class CommunityActivity extends AppCompatActivity{
                     selected = fragment1;
                 }else if(position == 2){
 
-                        fragment3 = new MyPageFragment(CommunityActivity.this);
+                        fragment2 = new MyPageFragment(CommunityActivity.this);
 
-                    selected = fragment3;
+                    selected = fragment2;
                 }
 
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame, selected).commit();
@@ -82,6 +82,31 @@ public class CommunityActivity extends AppCompatActivity{
 
             }
         });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(selected == fragment0){
+
+            fragment0 = new FeedFragment(CommunityActivity.this);
+
+            selected = fragment0;
+        }
+        else if(selected == fragment1){
+
+            fragment1 = new SearchFragment(CommunityActivity.this);
+
+            selected = fragment1;
+        }else if(selected == fragment2){
+
+            fragment2 = new MyPageFragment(CommunityActivity.this);
+
+            selected = fragment2;
+        }
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.frame, selected).commit();
 
     }
 

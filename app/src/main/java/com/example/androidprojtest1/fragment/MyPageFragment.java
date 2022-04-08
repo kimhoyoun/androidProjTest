@@ -24,7 +24,7 @@ import com.example.androidprojtest1.model.CommunityItemLayout;
 
 import java.util.ArrayList;
 
-public class MyPageFragment extends Fragment {
+public class MyPageFragment extends Fragment implements View.OnClickListener{
     Context context;
 
     MyDatabaseHelper myHelper;
@@ -57,12 +57,23 @@ public class MyPageFragment extends Fragment {
         profileInnerLayout = (LinearLayout) view.findViewById(R.id.profileInnerLayout);
         profileTabName = (TextView) view.findViewById(R.id.profileTabName);
 
+        profileTabName.setText("내가 쓴 게시글");
+        scrollViewInit();
+
+        for(int i=0; i<itemList.size(); i++){
+            itemList.get(i).setOnClickListener(MyPageFragment.this);
+        }
 
         btnProfileFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 profileTabName.setText("내가 쓴 게시글");
                 scrollViewInit();
+
+                for(int i=0; i<itemList.size(); i++){
+                    itemList.get(i).setOnClickListener(MyPageFragment.this);
+                }
+
             }
         });
 
@@ -74,23 +85,14 @@ public class MyPageFragment extends Fragment {
             }
         });
 
-        for(int i =0; i<itemList.size(); i++) {
-            final int index;
-            index = i;
 
-            itemList.get(i).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
 
-                    CommunityActivity act = (CommunityActivity)getActivity();
-                    act.detailPage(itemList.get(index).getDto());
-                }
-            });
-        }
+
 
 
         return view;
     }
+
 
     public void scrollViewInit(){
         CommunityItemDTO dto;
@@ -165,4 +167,22 @@ public class MyPageFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onClick(View v) {
+
+        android.util.Log.i("결과",v.getId()+"");
+//        if(itemList.size() != 0){
+//            for(int i =0; i<itemList.size(); i++){
+//                final int index = i;
+//
+//                itemList.get(i).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        CommunityActivity act = (CommunityActivity)getActivity();
+//                        act.detailPage(itemList.get(index).getDto());
+//                    }
+//                });
+//            }
+//        }
+    }
 }

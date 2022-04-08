@@ -55,7 +55,7 @@ public class FeedFragment extends Fragment {
     LinearLayout detailLayout;
     View detailView;
 
-    InputMethodManager imm;
+//    InputMethodManager imm;
 
 
     // newFeedView
@@ -83,7 +83,7 @@ public class FeedFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         myHelper = new MyDatabaseHelper(context);
-        imm = (InputMethodManager) context.getSystemService(INPUT_METHOD_SERVICE);
+//        imm = (InputMethodManager) context.getSystemService(INPUT_METHOD_SERVICE);
 
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
 

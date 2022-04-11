@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,25 +22,26 @@ import com.example.androidprojtest1.MyDatabaseHelper;
 import com.example.androidprojtest1.R;
 import com.example.androidprojtest1.model.CommunityItemDTO;
 import com.example.androidprojtest1.model.CommunityItemLayout;
+import com.example.androidprojtest1.FeedItemAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class SearchFragment extends Fragment {
     Context context;
-    SQLiteDatabase database;
     MyDatabaseHelper myHelper;
     SQLiteDatabase sqlDB;
 
 
-    LinearLayout scrollViewInLayout;
     Button btnSearch;
-    ArrayList<CommunityItemLayout> itemList = new ArrayList<>();
-    LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
     EditText searchText;
     TextView resultText;
+
+    ArrayList<CommunityItemDTO> dtoList;
+
+    RecyclerView recyclerView;
+    FeedItemAdapter adapter;
 
     public SearchFragment( Context context){
         this.context = context;
@@ -48,10 +51,15 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        scrollViewInLayout = (LinearLayout) view.findViewById(R.id.scrollViewInLayout2);
+
         btnSearch = (Button) view.findViewById(R.id.btnSearch);
         searchText = (EditText) view.findViewById(R.id.searchText);
         resultText = (TextView) view.findViewById(R.id.resultText);
+
+
+        recyclerView = view.findViewById(R.id.search_rectclerView);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
 
         myHelper = new MyDatabaseHelper(context);
 
@@ -60,26 +68,18 @@ public class SearchFragment extends Fragment {
             public void onClick(View v) {
                 String userid = searchText.getText().toString();
                 if(!userid.equals("")){
-                    ArrayList<CommunityItemLayout> resultList = new ArrayList<>();
 
-                    itemParams.setMargins(30,30,30,30);
+                    dtoList = searchList(userid);
 
-                    resultList = searchList(userid);
-
-                    if(resultList.size() == 0){
-
-                        scrollViewInLayout.removeAllViews();
-
-                        scrollViewInLayout.addView(resultText, new LinearLayout.LayoutParams(
-                                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                    if(dtoList.size() == 0){
                         resultText.setGravity(Gravity.CENTER);
                         resultText.setText("검색 결과 없음");
+                        adapter = new FeedItemAdapter(null);
+                        recyclerView.setAdapter(adapter);
                     }else{
-                        scrollViewInLayout.removeAllViews();
-                         for(int i =0; i<resultList.size(); i++){
-                            scrollViewInLayout.addView(resultList.get(i), itemParams);
-                        }
 
+                        adapter = new FeedItemAdapter(dtoList);
+                        recyclerView.setAdapter(adapter);
                     }
                 }
             }
@@ -91,7 +91,7 @@ public class SearchFragment extends Fragment {
 
     public ArrayList searchList(String userid){
 
-        ArrayList<CommunityItemLayout> list = new ArrayList<>();
+        ArrayList<CommunityItemDTO> dList = new ArrayList<>();
         sqlDB = myHelper.getReadableDatabase();
 
         if(sqlDB != null){
@@ -114,16 +114,14 @@ public class SearchFragment extends Fragment {
 
                     CommunityItemDTO dto = new CommunityItemDTO(no, userID, title, mainText, likeNum, cName, date);
 
-                    CommunityItemLayout itemLayout = new CommunityItemLayout(context, dto);
-                    list.add(itemLayout);
+                    dList.add(dto);
                 }
             }
-
             cursor.close();
             sqlDB.close();
         } else{
             android.util.Log.i("결과", "실패");
         }
-        return list;
+        return dList;
     }
 }

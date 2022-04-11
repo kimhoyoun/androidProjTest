@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,9 +12,12 @@
         android:layout_marginStart="1dp"
         android:layout_marginLeft="1dp">
 
-
     </androidx.appcompat.widget.Toolbar>
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/insertToolbar"
+        android:layout_above="@+id/insertBottomLayout">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="5dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -48,40 +51,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:hint="본문을 입력해주세요."
-            android:text="지역 항목 추가(지역으로 검색)\n
-가게에 대한 위치 정보(있으면 좋음)링크"          />
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="10dp">
-
-            <ImageButton
-                android:id="@+id/btnImgAdd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/comment"
-                android:background="@color/white"/>
-        </LinearLayout>
+            android:hint="본문을 입력해주세요."/>
 
     </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
+        android:id="@+id/insertBottomLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="right">
+        android:orientation="horizontal"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true">
 
-        <Button
-            android:id="@+id/btnNewFeedInsert"
+        <ImageButton
+            android:id="@+id/btnImgAdd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="저장"/>
-        <Button
-            android:id="@+id/btnNewFeedCancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="취소"/>
+            android:src="@drawable/comment"
+            android:background="@color/white"/>
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

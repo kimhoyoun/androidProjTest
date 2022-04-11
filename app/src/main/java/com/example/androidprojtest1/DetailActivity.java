@@ -20,6 +20,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.androidprojtest1.R;
 import com.example.androidprojtest1.model.CommentDTO;
@@ -35,18 +37,16 @@ public class DetailActivity extends AppCompatActivity {
     MyDatabaseHelper myHelper;
     SQLiteDatabase sqlDB;
 
-    LinearLayout detailMyLayout;
     InputMethodManager imm;
 
     Button btnNewComment;
     Button btnCommentImg;
     EditText newCommnetText;
-    LinearLayout commentLayout;
 
-    ArrayList<LinearLayout> commentList;
+    ArrayList<CommentDTO> commentList = new ArrayList<>();
 
-    LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+    RecyclerView detailCommentRecyclerView;
+    CommentItemAdapter commentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,10 @@ public class DetailActivity extends AppCompatActivity {
         btnNewComment = (Button)findViewById(R.id.btnNewComment);
         newCommnetText = (EditText)findViewById(R.id.newCommnetText);
 
+        detailCommentRecyclerView = findViewById(R.id.detailCommentRecyclerView);
+        detailCommentRecyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+
+
         Toolbar toolbar = findViewById(R.id.detailToolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -70,20 +74,22 @@ public class DetailActivity extends AppCompatActivity {
         TextView title = (TextView) findViewById(R.id.detalTitle);
         TextView mainText = (TextView) findViewById(R.id.detailMainText);
         TextView dateText = (TextView) findViewById(R.id.detailDateText);
-        commentLayout = findViewById(R.id.commentLayout);
+
 
         title.setText(dto.getTitle());
         mainText.setText(dto.getMainText());
         dateText.setText(dto.getDate().substring(0,10));
 
-        setComment();
+        commentList = setComment();
 
-
-
+        commentAdapter = new CommentItemAdapter(commentList);
+        detailCommentRecyclerView.setAdapter(commentAdapter);
 
         btnNewComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!newCommnetText.getText().toString().equals("")){
+
                 String query = "insert into comment (comment_user, comment_text, feed_user, feed_no) values('user6','"+newCommnetText.getText().toString()
                      +"','"+dto.getUserID().toString()+"',"+dto.getNo()+")";
 
@@ -94,10 +100,26 @@ public class DetailActivity extends AppCompatActivity {
                 // 키보드 내리기
                 imm.hideSoftInputFromWindow(newCommnetText.getWindowToken(), 0);
                 newCommnetText.setText("");
-                // 댓글 갱신
-                setComment();
 
+                // 댓글 갱신
+                commentList = setComment();
+                commentAdapter = new CommentItemAdapter(commentList);
+                detailCommentRecyclerView.setAdapter(commentAdapter);
+
+                }else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(DetailActivity.this);
+                    builder.setTitle("오류");
+                    builder.setMessage("댓글을 입력해 주세요!");
+                    builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+
+                    builder.show();
                 }
+
+            }
             });
 
 
@@ -123,7 +145,6 @@ public class DetailActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.detail_menuDelete:
-
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(DetailActivity.this);
                 builder.setTitle("삭제");
@@ -159,7 +180,6 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
-
     public void update(CommunityItemDTO item){
         Intent intent = new Intent(DetailActivity.this, InsertActivity.class);
         intent.putExtra("dto",item);
@@ -173,17 +193,18 @@ public class DetailActivity extends AppCompatActivity {
 
         sqlDB = myHelper.getWritableDatabase();
         sqlDB.execSQL(query);
+
+        query = "delete from comment where feed_no = "+no;
+        sqlDB.execSQL(query);
+
         sqlDB.close();
-
-
 
         return true;
     }
 
-    public void setComment(){
-        CommentDTO commentDTO;
-        commentList = new ArrayList<>();
-        commentLayout.removeAllViews();
+    public ArrayList<CommentDTO> setComment(){
+        ArrayList<CommentDTO> list = new ArrayList<>();
+
         sqlDB = myHelper.getReadableDatabase();
 
         try{
@@ -199,11 +220,9 @@ public class DetailActivity extends AppCompatActivity {
                     String comment_text = cursor.getString(2);
                     String feed_user = cursor.getString(3);
                     int feed_no = cursor.getInt(4);
-
-                    commentDTO = new CommentDTO(no, comment_user, comment_text, feed_user, feed_no);
-                    CommentItemLayout itemLayout = new CommentItemLayout(this,commentDTO, dto);
-                    commentList.add(itemLayout);
-                    commentLayout.addView(itemLayout, itemParams);
+                    String comment_time = cursor.getString(5);
+                    CommentDTO commentDTO = new CommentDTO(no, comment_user, comment_text, feed_user, feed_no, comment_time);
+                    list.add(commentDTO);
 
                 }
             } else{
@@ -212,5 +231,7 @@ public class DetailActivity extends AppCompatActivity {
         } catch(Exception e){
             e.printStackTrace();
         }
+
+        return list;
     }
 }

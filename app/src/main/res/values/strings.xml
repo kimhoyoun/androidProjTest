@@ -3,5 +3,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="selectAllQuery">SELECT * FROM communityItem ORDER BY no DESC</string>
-    <string name="myselectAllQuery">SELECT * FROM communityItem WHERE user_id = \'user1\' ORDER BY no DESC</string>
+    <string name="myselectAllQuery">SELECT * FROM communityItem WHERE user_id = \'user6\' ORDER BY no DESC</string>
 </resources>

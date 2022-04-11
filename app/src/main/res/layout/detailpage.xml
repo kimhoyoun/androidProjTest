@@ -51,7 +51,7 @@
                         android:text="제목"
                         android:textSize="20dp" />
 
-                </LinearLayout>
+            </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -99,13 +99,12 @@
                         android:text="댓글" />
 
 
-                    <LinearLayout
-                        android:id="@+id/commentLayout"
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/detailCommentRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:background="#E4E4E4"/>
 
-                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -127,23 +126,15 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/btnCommentImg"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="0.5"
-                    android:text="img" />
 
                 <EditText
                     android:id="@+id/newCommnetText"
-                    android:layout_width="wrap_content"
+                    android:layout_width="265dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:layout_weight="10"
-                    android:hint="댓글쓰기" />
+
+                    android:hint="댓글을 입력하세요" />
 
                 <Button
                     android:id="@+id/btnNewComment"
@@ -151,8 +142,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:layout_weight="0.5"
-                    android:text="쓰기" />
+
+                    android:text="입력" />
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>

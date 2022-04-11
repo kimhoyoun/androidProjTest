@@ -7,13 +7,15 @@ public class CommentDTO {
     private String comment_text;
     private String feed_user;
     private int feed_no;
+    private String date;
 
-    public CommentDTO(int no, String comment_user, String comment_text, String feed_user, int feed_no){
+    public CommentDTO(int no, String comment_user, String comment_text, String feed_user, int feed_no, String date){
         this.no = no;
         this.comment_user = comment_user;
         this.comment_text = comment_text;
         this.feed_user = feed_user;
         this.feed_no = feed_no;
+        this.date = date;
     }
 
 
@@ -55,6 +57,14 @@ public class CommentDTO {
 
     public void setFeed_no(int feed_no) {
         this.feed_no = feed_no;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     @Override

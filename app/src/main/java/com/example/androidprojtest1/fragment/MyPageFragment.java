@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +16,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.androidprojtest1.CommentItemAdapter;
 import com.example.androidprojtest1.CommunityActivity;
+import com.example.androidprojtest1.FeedItemAdapter;
 import com.example.androidprojtest1.MyDatabaseHelper;
 import com.example.androidprojtest1.R;
 import com.example.androidprojtest1.model.CommentDTO;
@@ -24,7 +28,7 @@ import com.example.androidprojtest1.model.CommunityItemLayout;
 
 import java.util.ArrayList;
 
-public class MyPageFragment extends Fragment implements View.OnClickListener{
+public class MyPageFragment extends Fragment{
     Context context;
 
     MyDatabaseHelper myHelper;
@@ -33,13 +37,15 @@ public class MyPageFragment extends Fragment implements View.OnClickListener{
     TextView profileText;
     Button btnProfileFeed;
     Button btnProfileComment;
-    LinearLayout profileInnerLayout;
     TextView profileTabName;
 
-    ArrayList<CommentItemLayout> commentList;
-    ArrayList<CommunityItemLayout> itemList = new ArrayList<>();
-    LinearLayout.LayoutParams itemParams = new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+    ArrayList<CommentDTO> commentList = new ArrayList<>();
+
+    ArrayList<CommunityItemDTO> dtoList;
+
+    RecyclerView recyclerView;
+    FeedItemAdapter feedAdapter;
+    CommentItemAdapter commentAdapter;
 
     public MyPageFragment(Context context){
         this.context = context;
@@ -54,25 +60,20 @@ public class MyPageFragment extends Fragment implements View.OnClickListener{
         profileText = (TextView) view.findViewById(R.id.profileIdText);
         btnProfileFeed = (Button) view.findViewById(R.id.btnProfileFeed);
         btnProfileComment = (Button) view.findViewById(R.id.btnProfileComment);
-        profileInnerLayout = (LinearLayout) view.findViewById(R.id.profileInnerLayout);
         profileTabName = (TextView) view.findViewById(R.id.profileTabName);
 
-        profileTabName.setText("내가 쓴 게시글");
-        scrollViewInit();
 
-        for(int i=0; i<itemList.size(); i++){
-            itemList.get(i).setOnClickListener(MyPageFragment.this);
-        }
+        recyclerView = view.findViewById(R.id.mypage_recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
 
         btnProfileFeed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 profileTabName.setText("내가 쓴 게시글");
-                scrollViewInit();
+                dtoList = searchMyFeed();
 
-                for(int i=0; i<itemList.size(); i++){
-                    itemList.get(i).setOnClickListener(MyPageFragment.this);
-                }
+                feedAdapter = new FeedItemAdapter(dtoList);
+                recyclerView.setAdapter(feedAdapter);
 
             }
         });
@@ -81,26 +82,25 @@ public class MyPageFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onClick(View v) {
                 profileTabName.setText("내가 쓴 댓글");
-                setComment();
+
+                commentList = setComment();
+
+                commentAdapter = new CommentItemAdapter(commentList);
+                recyclerView.setAdapter(commentAdapter);
+
             }
         });
-
-
-
-
-
 
         return view;
     }
 
 
-    public void scrollViewInit(){
-        CommunityItemDTO dto;
-        profileInnerLayout.removeAllViews();
+    public ArrayList<CommunityItemDTO> searchMyFeed(){
+
+        ArrayList<CommunityItemDTO> list = new ArrayList<>();
+
         sqlDB = myHelper.getReadableDatabase();
 
-
-        itemParams.setMargins(30,30,30,30);
         try{
             if(sqlDB != null){
                 String query = getString(R.string.myselectAllQuery);
@@ -117,11 +117,9 @@ public class MyPageFragment extends Fragment implements View.OnClickListener{
                     int cName = cursor.getInt(5);
                     String date = cursor.getString(6);
 
-                    dto = new CommunityItemDTO(no, userID, title, mainText, likeNum, cName, date);
+                    CommunityItemDTO dto = new CommunityItemDTO(no, userID, title, mainText, likeNum, cName, date);
 
-                    CommunityItemLayout itemLayout = new CommunityItemLayout(context,dto);
-                    itemList.add(itemLayout);
-                    profileInnerLayout.addView(itemLayout, itemParams);
+                    list.add(dto);
 
                 }
             } else{
@@ -130,17 +128,19 @@ public class MyPageFragment extends Fragment implements View.OnClickListener{
         } catch(Exception e){
             e.printStackTrace();
         }
+
+        return list;
     }
 
-    public void setComment(){
-        CommentDTO dto;
-        commentList = new ArrayList<>();
-        profileInnerLayout.removeAllViews();
+
+    public ArrayList<CommentDTO> setComment(){
+        ArrayList<CommentDTO> list = new ArrayList<>();
+
         sqlDB = myHelper.getReadableDatabase();
 
         try{
             if(sqlDB != null){
-                Cursor cursor = sqlDB.rawQuery("select * from comment where comment_user = 'user1'",null);
+                Cursor cursor = sqlDB.rawQuery("select * from comment where comment_user = 'user6'",null);
                 int count = cursor.getCount();
 
                 android.util.Log.i("결과", count+"");
@@ -151,12 +151,10 @@ public class MyPageFragment extends Fragment implements View.OnClickListener{
                     String comment_text = cursor.getString(2);
                     String feed_user = cursor.getString(3);
                     int feed_no = cursor.getInt(4);
+                    String comment_time = cursor.getString(5);
+                    CommentDTO dto = new CommentDTO(no, comment_user, comment_text, feed_user, feed_no, comment_time);
 
-                    dto = new CommentDTO(no, comment_user, comment_text, feed_user, feed_no);
-                    CommentItemLayout itemLayout = new CommentItemLayout(context,dto, itemList.get(0).getDto());
-
-                    commentList.add(itemLayout);
-                    profileInnerLayout.addView(itemLayout, itemParams);
+                    list.add(dto);
 
                 }
             } else{
@@ -165,24 +163,8 @@ public class MyPageFragment extends Fragment implements View.OnClickListener{
         } catch(Exception e){
             e.printStackTrace();
         }
+
+        return list;
     }
 
-    @Override
-    public void onClick(View v) {
-
-        android.util.Log.i("결과",v.getId()+"");
-//        if(itemList.size() != 0){
-//            for(int i =0; i<itemList.size(); i++){
-//                final int index = i;
-//
-//                itemList.get(i).setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        CommunityActivity act = (CommunityActivity)getActivity();
-//                        act.detailPage(itemList.get(index).getDto());
-//                    }
-//                });
-//            }
-//        }
-    }
 }

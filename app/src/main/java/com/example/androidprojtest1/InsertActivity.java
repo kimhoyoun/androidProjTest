@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -36,7 +35,7 @@ public class InsertActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_new_feed);
+        setContentView(R.layout.activity_insert);
 
         Toolbar toolbar = findViewById(R.id.insertToolbar);
         setSupportActionBar(toolbar);
@@ -47,8 +46,6 @@ public class InsertActivity extends AppCompatActivity {
         newTitle = (EditText)findViewById(R.id.newTitle);
         newMainText = (EditText) findViewById(R.id.newMainText);
         btnImgAdd = (ImageButton) findViewById(R.id.btnImgAdd);
-        btnNewFeedOK = (Button) findViewById(R.id.btnNewFeedInsert);
-        btnNewFeedCancel = (Button) findViewById(R.id.btnNewFeedCancel);
 
         myHelper = new MyDatabaseHelper(this);
 

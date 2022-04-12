@@ -19,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.androidprojtest1.model.CommunityItemDTO;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class InsertActivity extends AppCompatActivity {
 
@@ -31,6 +33,9 @@ public class InsertActivity extends AppCompatActivity {
 
     MyDatabaseHelper myHelper;
     SQLiteDatabase sqlDB;
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference databaseReference = database.getReference();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,13 +97,19 @@ public class InsertActivity extends AppCompatActivity {
     }
 
     public void insert(){
-        String query = "insert into communityItem (user_id, title, main_text) values('user6','"+newTitle.getText().toString()
-                +"','"+newMainText.getText().toString()+"')";
+//        String query = "insert into communityItem (user_id, title, main_text) values('user6','"+newTitle.getText().toString()
+//                +"','"+newMainText.getText().toString()+"')";
+//
+//        sqlDB = myHelper.getWritableDatabase();
+//        sqlDB.execSQL(query);
+//        sqlDB.close();
+//        Toast.makeText(InsertActivity.this, "입력됨",Toast.LENGTH_SHORT).show();
 
-        sqlDB = myHelper.getWritableDatabase();
-        sqlDB.execSQL(query);
-        sqlDB.close();
-        Toast.makeText(InsertActivity.this, "입력됨",Toast.LENGTH_SHORT).show();
+        databaseReference = database.getReference("communityItem");
+        CommunityItemDTO item = new CommunityItemDTO(1, "user2", "첫번째 객체", "테스트입니다.", 0, 1, "2022-04-11 10:32:30");
+
+        databaseReference.child("item2").push().setValue(item);
+
 
         finish();
     }

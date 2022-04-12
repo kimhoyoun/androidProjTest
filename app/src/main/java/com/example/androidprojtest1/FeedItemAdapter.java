@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.androidprojtest1.model.CommunityItemDTO;
 
 import java.text.ParseException;
@@ -39,6 +40,7 @@ public class FeedItemAdapter extends RecyclerView.Adapter<FeedViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull FeedViewHolder holder, int position) {
+
         if(getItemCount()!= 0) {
             CommunityItemDTO dto = itemList.get(position);
             holder.title.setText(dto.getTitle());

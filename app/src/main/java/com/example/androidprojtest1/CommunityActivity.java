@@ -1,7 +1,6 @@
 package com.example.androidprojtest1;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +12,8 @@ import com.example.androidprojtest1.fragment.MyPageFragment;
 import com.example.androidprojtest1.fragment.SearchFragment;
 import com.example.androidprojtest1.model.CommunityItemDTO;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class CommunityActivity extends AppCompatActivity{
 
@@ -20,6 +21,9 @@ public class CommunityActivity extends AppCompatActivity{
     TabLayout tabs;
 
     Fragment selected;
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = database.getReference();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
